@@ -6,13 +6,12 @@
 ## 点位数据记录
 > 💡 Tips：Json序列化添加枚举与字符串的格式转换
 
-:::tips
 
 - **URL**：`/data`
 - **Method**：`POST`
 - **需要登录**：否
 - **需要鉴权**：否
-:::
+
 ```csharp
 var builder = WebApplication.CreateBuilder(args);
 
@@ -178,13 +177,12 @@ public enum DeviceStatus
 ```
 ## 告警记录
 💡 Tips：Json序列化添加枚举与字符串的格式转换
-:::tips
 
 - **URL**：`/alarm`
 - **Method**：`POST`
 - **需要登录**：否
 - **需要鉴权**：否
-:::
+
 ```csharp
 var builder = WebApplication.CreateBuilder(args);
 
