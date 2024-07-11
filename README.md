@@ -1,4 +1,4 @@
-## KangServer开放的对接数据
+## Webhook配置
 > 💡 Tips：可通过此方式将KangServer与MES等系统对接。
 
 - 点位数据记录。
