@@ -1,150 +1,281 @@
-## Markdown 和快捷键全覆盖
-> 💡 Tips：语雀支持全功能 markdown 语法，可以点击文档编辑页右下角小键盘查看全部支持的语法和快捷键。
+## KangServer开放的对接数据
+> 💡 Tips：可通过此方式将KangServer与MES等系统对接。
 
-- 支持导入导出 `markdown` 文件。
-- 支持自动识别粘贴的 `markdown` 格式内容转换为富文本。
-## 行内代码
-> 💡 Tips：可通过 markdown 语法（```+ `code` + ``` + `空格`）或者快捷键 `ctrl/cmd` + `E`快速插入行内代码。
+- 点位数据记录。
+- 告警记录。
+## 点位数据记录
+> 💡 Tips：Json序列化添加枚举与字符串的格式转换
 
-在文本中使用`行内代码`，可以顺畅地显示代码变量名。
-## 代码块
-> 💡 Tips：输入`/代码块`或点击上方工具栏点击上方工具栏![image.png](https://cdn.nlark.com/yuque/0/2022/png/519985/1646896088287-c8e7ef6c-2748-40d7-b53f-223b99fc5be5.png#averageHue=%23b1e5c6&clientId=u8726e0a6-b55e-4&from=paste&height=22&id=EuV2b&originHeight=22&originWidth=21&originalType=binary&ratio=1&rotation=0&showTitle=false&size=352&status=done&style=none&taskId=u6adeff07-b08f-4f2a-9a78-84bebd06c32&title=&width=21)，选择「代码块」、插入代码卡片。
+:::tips
 
-代码块同时支持多种颜色主题：
-```javascript
-export default class QuickSort extends Sort {
-  sort(originalArray) {
-    const array = [...originalArray];
+- **URL**：`/data`
+- **Method**：`POST`
+- **需要登录**：否
+- **需要鉴权**：否
+:::
+```csharp
+var builder = WebApplication.CreateBuilder(args);
 
-    if (array.length <= 1) {
-      return array;
+builder.Services.Configure<JsonOptions>(o => o.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+
+var app = builder.Build();
+
+//数据记录
+app.MapPost("/data", (IList<PositionRecord> records) =>
+{
+    foreach (var record in records)
+    {
+        Console.WriteLine($"{record.PositionName} => {record.PositionFunction} {record.CreateTime}");
     }
+    return TypedResults.Ok();
+});
 
-    // Init left and right arrays.
-    const leftArray = [];
-    const rightArray = [];
-
-    // Take the first element of array as a pivot.
-    const pivotElement = array.shift();
-    const centerArray = [pivotElement];
-
-    // Split all array elements between left, center and right arrays.
-    while (array.length) {
-      const currentElement = array.shift();
-
-      // Call visiting callback.
-      this.callbacks.visitingCallback(currentElement);
-
-      if (this.comparator.equal(currentElement, pivotElement)) {
-        centerArray.push(currentElement);
-      } else if (this.comparator.lessThan(currentElement, pivotElement)) {
-        leftArray.push(currentElement);
-      } else {
-        rightArray.push(currentElement);
-      }
-    }
-    // Sort left and right arrays.
-    const leftArraySorted = this.sort(leftArray);
-    const rightArraySorted = this.sort(rightArray);
-
-    return leftArraySorted.concat(centerArray, rightArraySorted);
-  }
-}
+app.Run();
 ```
-```javascript
-export default class QuickSort extends Sort {
-  sort(originalArray) {
-    const array = [...originalArray];
+```csharp
+/// <summary>
+/// 点位数据
+/// </summary>
+public class PositionRecord
+{
+    /// <summary>
+    /// 点位ID
+    /// </summary>
+    public int PositionId { get; set; }
 
-    if (array.length <= 1) {
-      return array;
-    }
+    /// <summary>
+    /// 点位名称
+    /// </summary>
+    public string PositionName { get; set; }
 
-    // Init left and right arrays.
-    const leftArray = [];
-    const rightArray = [];
+    /// <summary>
+    /// 区域名称
+    /// </summary>
+    public string AreaName { get; set; }
 
-    // Take the first element of array as a pivot.
-    const pivotElement = array.shift();
-    const centerArray = [pivotElement];
+    /// <summary>
+    /// 点位功能类型
+    /// </summary>
+    public PositionFunctionEnum PositionFunction { get; set; }
 
-    // Split all array elements between left, center and right arrays.
-    while (array.length) {
-      const currentElement = array.shift();
+    /// <summary>
+    /// 点位功能指定数据
+    /// </summary>
+    public ICollection<RecordContent> Contents { get; set; } = new List<RecordContent>();
 
-      // Call visiting callback.
-      this.callbacks.visitingCallback(currentElement);
-
-      if (this.comparator.equal(currentElement, pivotElement)) {
-        centerArray.push(currentElement);
-      } else if (this.comparator.lessThan(currentElement, pivotElement)) {
-        leftArray.push(currentElement);
-      } else {
-        rightArray.push(currentElement);
-      }
-    }
-    // Sort left and right arrays.
-    const leftArraySorted = this.sort(leftArray);
-    const rightArraySorted = this.sort(rightArray);
-
-    return leftArraySorted.concat(centerArray, rightArraySorted);
-  }
+    /// <summary>
+    /// 记录创建时间
+    /// </summary>
+    public DateTime CreateTime { get; set; }
 }
-```
-```javascript
-export default class QuickSort extends Sort {
-  sort(originalArray) {
-    const array = [...originalArray];
 
-    if (array.length <= 1) {
-      return array;
-    }
+public class RecordContent
+{
+    /// <summary>
+    /// 数据内容
+    /// "Flow": "流量"
+    /// "Micron01": "0.1μm"
+    /// "Micron02": "0.2μm"
+    /// "Micron03": "0.3μm"
+    /// "Micron05": "0.5μm"
+    /// "Micron10": "1.0μm"
+    /// "Micron30": "3.0μm"
+    /// "Micron50": "5.0μm"
+    /// "Micron100": "10.0μm"
+    /// "Micron150": "15.0μm"
+    /// "Volume": "体积"
+    /// </summary>
+    public string Key { get; set; }
 
-    // Init left and right arrays.
-    const leftArray = [];
-    const rightArray = [];
+    /// <summary>
+    /// 当前值
+    /// </summary>
+    public double Value { get; set; }
 
-    // Take the first element of array as a pivot.
-    const pivotElement = array.shift();
-    const centerArray = [pivotElement];
+    /// <summary>
+    /// 设备状态
+    /// </summary>
+    public DeviceStatus DeviceStatus { get; set; }
 
-    // Split all array elements between left, center and right arrays.
-    while (array.length) {
-      const currentElement = array.shift();
+    /// <summary>
+    /// 对应设备的地址，用于数据异常时，检测硬件
+    /// </summary>
+    public int DeviceAddress { get; set; }
 
-      // Call visiting callback.
-      this.callbacks.visitingCallback(currentElement);
+    /// <summary>
+    /// 设备所属的通道
+    /// </summary>
+    public string Channel { get; set; }
 
-      if (this.comparator.equal(currentElement, pivotElement)) {
-        centerArray.push(currentElement);
-      } else if (this.comparator.lessThan(currentElement, pivotElement)) {
-        leftArray.push(currentElement);
-      } else {
-        rightArray.push(currentElement);
-      }
-    }
-    // Sort left and right arrays.
-    const leftArraySorted = this.sort(leftArray);
-    const rightArraySorted = this.sort(rightArray);
-
-    return leftArraySorted.concat(centerArray, rightArraySorted);
-  }
 }
+
+/// <summary>
+/// 点位功能类型
+/// </summary>
+public enum PositionFunctionEnum
+{
+    /// <summary>
+    /// 粒子计数器
+    /// </summary>
+    ParticleCounting,
+    /// <summary>
+    /// 浮游菌
+    /// </summary>
+    AirborneMicrobe,
+    /// <summary>
+    /// 温湿度
+    /// </summary>
+    Humiture,
+    /// <summary>
+    /// 环境参数
+    /// </summary>
+    Environment,
+    /// <summary>
+    /// 风速
+    /// </summary>
+    Wind,
+    /// <summary>
+    /// 压差
+    /// </summary>
+    Press,
+    /// <summary>
+    /// 氧气
+    /// </summary>
+    Oxygen,
+    /// <summary>
+    /// 露点
+    /// </summary>
+    DewPoint
+}
+
+/// <summary>
+/// 设备状态
+/// </summary>
+public enum DeviceStatus
+{
+    /// <summary>
+    /// 设备未启动
+    /// </summary>
+    NotStarted,
+    /// <summary>
+    /// 设备离线
+    /// </summary>
+    Offline,
+    /// <summary>
+    /// 设备正常
+    /// </summary>
+    Normal,
+    /// <summary>
+    /// 设备预警
+    /// </summary>
+    Warning,
+    /// <summary>
+    /// 设备告警
+    /// </summary>
+    Alarm
+}
+
 ```
-## 数学公式
-> 💡 Tips：输入 `/公式`或点击上方工具栏点击上方工具栏![image.png](https://cdn.nlark.com/yuque/0/2022/png/519985/1646896088287-c8e7ef6c-2748-40d7-b53f-223b99fc5be5.png#averageHue=%23b1e5c6&clientId=u8726e0a6-b55e-4&from=paste&height=22&id=Y49Cp&originHeight=22&originWidth=21&originalType=binary&ratio=1&rotation=0&showTitle=false&size=352&status=done&style=none&taskId=u6adeff07-b08f-4f2a-9a78-84bebd06c32&title=&width=21)，选择「公式」、插入公式卡片。
+## 告警记录
+💡 Tips：Json序列化添加枚举与字符串的格式转换
+:::tips
 
-公式支持行内嵌套：![](https://intranetproxy.alipay.com/skylark/lark/__latex/8986e6bf4f4b4ff45d88debcfd9615ca.svg#card=math&code=c%20%3D%20%5Cpm%5Csqrt%7Ba%5E2%20%2B%20b%5E2%7D&id=pBGK4)，也支持块级嵌入。
-![](https://intranetproxy.alipay.com/skylark/lark/__latex/45d276c520dbdf5bf9f9f3e4a7e5c480.svg#card=math&code=f%28x%29%3D%5Cint_%7B-%5Cinfty%7D%5E%5Cinfty%5Cwidehat%20f%5Cxi%5C%2Ce%5E%7B2%5Cpi%20i%5Cxi%20x%7D%5C%2Cd%5Cxi%0A&id=FMYMS)
-## 画板
-> 💡 Tips：输入`/画板`或点击上方工具栏![image.png](https://cdn.nlark.com/yuque/0/2022/png/519985/1646896088287-c8e7ef6c-2748-40d7-b53f-223b99fc5be5.png#averageHue=%23b1e5c6&clientId=u8726e0a6-b55e-4&from=paste&height=22&id=J4UvR&originHeight=22&originWidth=21&originalType=binary&ratio=1&rotation=0&showTitle=false&size=352&status=done&style=none&taskId=u6adeff07-b08f-4f2a-9a78-84bebd06c32&title=&width=21)，选择「画板」、绘制流程图、架构图等各种图形。
+- **URL**：`/alarm`
+- **Method**：`POST`
+- **需要登录**：否
+- **需要鉴权**：否
+:::
+```csharp
+var builder = WebApplication.CreateBuilder(args);
 
-![](https://intranetproxy.alipay.com/skylark/lark/0/2022/jpeg/141/1643261198014-1b94d73a-8d53-416b-bc0e-05c2b61793ea.jpeg)
-![](https://intranetproxy.alipay.com/skylark/lark/0/2022/jpeg/141/1643260172392-f825fb81-bb39-49eb-982b-2e1467396ba4.jpeg)
+builder.Services.Configure<JsonOptions>(o => o.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
-![](https://cdn.nlark.com/yuque/0/2022/jpeg/956523/1657187591568-621b44f9-81f7-4be7-8c31-257d7ec9ab0a.jpeg)
-## 文本绘图
-> 💡 Tips：输入`/文本绘图`点击上方工具栏![image.png](https://cdn.nlark.com/yuque/0/2022/png/519985/1646896088287-c8e7ef6c-2748-40d7-b53f-223b99fc5be5.png#averageHue=%23b1e5c6&clientId=u8726e0a6-b55e-4&from=paste&height=22&id=z0jSW&originHeight=22&originWidth=21&originalType=binary&ratio=1&rotation=0&showTitle=false&size=352&status=done&style=none&taskId=u6adeff07-b08f-4f2a-9a78-84bebd06c32&title=&width=21)，选择「文本绘图」、插入文本绘图卡片。
-支持 [plantuml](https://plantuml.com/)、[mermaid](https://mermaid-js.github.io/mermaid/#/) 等多种格式，点击`预览`可看到图形。具体代码样式见[说明文档](https://www.yuque.com/yuque/gpvawt/gantt)。
+var app = builder.Build();
 
-![](https://intranetproxy.alipay.com/skylark/lark/__puml/b11b6192390c95750c4b71c2580ff529.svg#lake_card_v2=eyJ0eXBlIjoicHVtbCIsImNvZGUiOiJAc3RhcnR1bWxcblxuYXV0b251bWJlclxuXG5hY3RvciBcIueUqOaIt1wiIGFzIFVzZXJcbnBhcnRpY2lwYW50IFwi5rWP6KeI5ZmoXCIgYXMgQnJvd3NlclxucGFydGljaXBhbnQgXCLmnI3liqHnq69cIiBhcyBTZXJ2ZXIgI29yYW5nZVxuXG5hY3RpdmF0ZSBVc2VyXG5cblVzZXIgLT4gQnJvd3Nlcjog6L6T5YWlIFVSTFxuYWN0aXZhdGUgQnJvd3NlclxuXG5Ccm93c2VyIC0-IFNlcnZlcjog6K-35rGC5pyN5Yqh5ZmoXG5hY3RpdmF0ZSBTZXJ2ZXJcblxuU2VydmVyIC0-IFNlcnZlcjog5qih5p2_5riy5p-TXG5ub3RlIHJpZ2h0IG9mIFNlcnZlcjog6L-Z5piv5LiA5Liq5rOo6YeKXG5cblNlcnZlciAtPiBCcm93c2VyOiDov5Tlm54gSFRNTFxuZGVhY3RpdmF0ZSBTZXJ2ZXJcblxuQnJvd3NlciAtLT4gVXNlclxuXG5AZW5kdW1sIiwidXJsIjoiaHR0cHM6Ly9pbnRyYW5ldHByb3h5LmFsaXBheS5jb20vc2t5bGFyay9sYXJrL19fcHVtbC9iMTFiNjE5MjM5MGM5NTc1MGM0YjcxYzI1ODBmZjUyOS5zdmciLCJpZCI6Imd5WlBnIiwibWFyZ2luIjp7InRvcCI6dHJ1ZSwiYm90dG9tIjp0cnVlfSwiY2FyZCI6ImRpYWdyYW0ifQ==)![](https://lark-assets-test-aliyun.oss-cn-hangzhou.aliyuncs.com/yuque/__mermaid_v3/743010bfb6962498a4b9a485b60a8305.svg#lake_card_v2=eyJ0eXBlIjoibWVybWFpZCIsImNvZGUiOiJzZXF1ZW5jZURpYWdyYW1cbiAgICBwYXJ0aWNpcGFudCBKb2huXG4gICAgcGFydGljaXBhbnQgQWxpY2VcbiAgICBBbGljZS0-PkpvaG46IEhlbGxvIEpvaG4sIGhvdyBhcmUgeW91P1xuICAgIEpvaG4tLT4-QWxpY2U6IEdyZWF0ISIsInVybCI6Imh0dHBzOi8vbGFyay1hc3NldHMtdGVzdC1hbGl5dW4ub3NzLWNuLWhhbmd6aG91LmFsaXl1bmNzLmNvbS95dXF1ZS9fX21lcm1haWRfdjMvNzQzMDEwYmZiNjk2MjQ5OGE0YjlhNDg1YjYwYTgzMDUuc3ZnIiwiaWQiOiJLQXg5diIsIm1hcmdpbiI6eyJ0b3AiOnRydWUsImJvdHRvbSI6dHJ1ZX0sImNhcmQiOiJkaWFncmFtIn0=)
+//告警
+app.MapPost("/alarm", (AlarmData alarm) =>
+{
+    return TypedResults.Ok();
+});
+
+app.Run();
+```
+```csharp
+/// <summary>
+/// 告警数据
+/// </summary>
+public class AlarmData
+{
+    /// <summary>
+    /// 记录Id
+    /// </summary>
+    public int Id { get; set; }
+
+    /// <summary>
+    /// 告警产生时间
+    /// </summary>
+    public DateTime ReportTime { get; set; }
+
+    /// <summary>
+    /// 点位名称
+    /// </summary>
+    public string PositionName { get; set; }
+
+    public ICollection<AlarmDetailDTO> AlarmDetails { get; set; } = new List<AlarmDetailDTO>();
+
+    /// <summary>
+    /// 告警等级
+    /// </summary>
+    public AlarmLevelEnum Level { get; set; }
+}
+
+public class AlarmDetailDTO
+{
+    /// <summary>
+    /// 告警属性
+    /// </summary>
+    public string AlarmProperty { get; set; }
+
+    /// <summary>
+    /// 告警值
+    /// </summary>
+    public double AlarmValue { get; set; }
+
+    /// <summary>
+    /// 点位功能
+    /// </summary>
+    public PositionFunctionEnum Function { get; set; }
+
+    /// <summary>
+    /// 当前属性报警时间
+    /// </summary>
+    public DateTime ReportTime { get; set; }
+}
+
+public enum AlarmLevelEnum
+{
+    /// <summary>
+    /// 预警
+    /// </summary>
+    Warning,
+
+    /// <summary>
+    /// 报警
+    /// </summary>
+    Alarm
+}
+
+```
+## 界面配置
+> 💡 Tips：注意系统登录的账号需要有消息通知的权限
+
+1. 系统设置，点击消息通知，进入Webhook配置![image.png](https://cdn.nlark.com/yuque/0/2024/png/38594622/1720674555577-c7ff75b9-cc83-4b55-9143-a0af73204032.png#averageHue=%23fefefd&clientId=u35961b88-f4fd-4&from=paste&id=u42a5f8f4&originHeight=880&originWidth=1920&originalType=binary&ratio=1.25&rotation=0&showTitle=false&size=82962&status=done&style=none&taskId=u95e29d7a-af58-4123-a7df-6e2896e989b&title=)
+
+2. 选择编辑配置
+
+![1720674103296.jpg](https://cdn.nlark.com/yuque/0/2024/jpeg/38594622/1720674135266-9c360437-13a0-403e-ae07-9da790f0dbf9.jpeg#averageHue=%23fefefe&clientId=u35961b88-f4fd-4&from=paste&id=ub2e94d5c&originHeight=880&originWidth=1920&originalType=binary&ratio=1.25&rotation=0&showTitle=false&size=35296&status=done&style=none&taskId=ua9ce9121-4166-4c1d-830e-37eb62af8ee&title=)
+
+3. 输入程序的API地址，选择要响应的功能
+
+![image.png](https://cdn.nlark.com/yuque/0/2024/png/38594622/1720674217061-261be7da-cf33-4caa-92b2-eaf86e315987.png#averageHue=%23cecece&clientId=u35961b88-f4fd-4&from=paste&height=488&id=u76e6d7f0&originHeight=610&originWidth=860&originalType=binary&ratio=1.25&rotation=0&showTitle=false&size=20727&status=done&style=none&taskId=uc38d4f29-8e0d-4ec9-9928-d0b40d7f99d&title=&width=688)
+

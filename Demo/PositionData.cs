@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace Demo;
+﻿namespace Demo;
 
 /// <summary>
 /// 点位数据
@@ -65,6 +63,17 @@ public class RecordContent
     /// 设备状态
     /// </summary>
     public DeviceStatus DeviceStatus { get; set; }
+
+    /// <summary>
+    /// 对应设备的地址，用于数据异常时，检测硬件
+    /// </summary>
+    public int DeviceAddress { get; set; }
+
+    /// <summary>
+    /// 设备所属的通道
+    /// </summary>
+    public string Channel { get; set; }
+
 }
 
 /// <summary>
@@ -85,6 +94,10 @@ public enum PositionFunctionEnum
     /// </summary>
     Humiture,
     /// <summary>
+    /// 环境参数
+    /// </summary>
+    Environment,
+    /// <summary>
     /// 风速
     /// </summary>
     Wind,
@@ -95,7 +108,11 @@ public enum PositionFunctionEnum
     /// <summary>
     /// 氧气
     /// </summary>
-    Oxygen
+    Oxygen,
+    /// <summary>
+    /// 露点
+    /// </summary>
+    DewPoint
 }
 
 /// <summary>
