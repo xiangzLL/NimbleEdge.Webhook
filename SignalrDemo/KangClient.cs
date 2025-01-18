@@ -13,7 +13,7 @@ public class KangClient
 
     public KangClient() 
     {
-        _urlAddress = $"http://106.15.61.202:7001";
+        _urlAddress = $"http://106.15.61.202:6001";
     }
 
     public async Task InitHubConnectionAsync()
