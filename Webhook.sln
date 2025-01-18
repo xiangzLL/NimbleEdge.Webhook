@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo", "Demo\Demo.csproj", "{6BE18886-3469-4B1A-A9FF-FDE1863EFCC6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo", "Demo\Demo.csproj", "{6BE18886-3469-4B1A-A9FF-FDE1863EFCC6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalrDemo", "SignalrDemo\SignalrDemo.csproj", "{1E5F0468-2AA6-4A53-9E45-C7F6F57CFE2E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{6BE18886-3469-4B1A-A9FF-FDE1863EFCC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6BE18886-3469-4B1A-A9FF-FDE1863EFCC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6BE18886-3469-4B1A-A9FF-FDE1863EFCC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E5F0468-2AA6-4A53-9E45-C7F6F57CFE2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E5F0468-2AA6-4A53-9E45-C7F6F57CFE2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E5F0468-2AA6-4A53-9E45-C7F6F57CFE2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E5F0468-2AA6-4A53-9E45-C7F6F57CFE2E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
